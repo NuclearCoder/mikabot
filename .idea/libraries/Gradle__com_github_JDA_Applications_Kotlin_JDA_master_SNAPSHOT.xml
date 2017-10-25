@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.JDA-Applications:Kotlin-JDA:master-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.JDA-Applications/Kotlin-JDA/master-SNAPSHOT/769b81b5892eacf56ae30711cb8a4c7309e0f552/Kotlin-JDA-master-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.JDA-Applications/Kotlin-JDA/master-SNAPSHOT/d26b813721b47f92e96a2f0fbb6777f27a54b6a3/Kotlin-JDA-master-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
