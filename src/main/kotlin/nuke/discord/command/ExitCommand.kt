@@ -1,4 +1,4 @@
-package nuke.discord.command.admin
+package nuke.discord.command
 
 import nuke.discord.command.meta.CommandContext
 import nuke.discord.command.meta.command.OwnerRestrictedCommand

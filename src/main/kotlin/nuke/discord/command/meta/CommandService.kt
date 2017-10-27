@@ -3,6 +3,7 @@ package nuke.discord.command.meta
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
 import net.dv8tion.jda.core.hooks.SubscribeEvent
 import nuke.discord.bot.NukeBot
+import nuke.discord.command.MessageHandler
 import nuke.discord.command.meta.command.Command
 import nuke.discord.command.meta.registry.CommandRegistry
 import nuke.discord.command.meta.registry.RegisteredCommand
@@ -10,6 +11,7 @@ import nuke.discord.util.discord.MessageTokenizer
 import nuke.discord.util.discord.hasSufficientPermissions
 
 class CommandService(private val bot: NukeBot,
+                     private val messageHandlers: List<MessageHandler>,
                      commandBuilder: (CommandRegistry.RegistryBuilder) -> Unit) {
 
     companion object {
@@ -51,7 +53,7 @@ class CommandService(private val bot: NukeBot,
                     processCommand(event, tokenizer, name, registry)
                 }
             } else { // is a message
-                //MessageHandler.processMessage(event)
+                messageHandlers.forEach { it.processMessage(event) }
             }
         }
     }

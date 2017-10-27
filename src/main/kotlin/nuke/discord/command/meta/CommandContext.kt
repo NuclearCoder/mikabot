@@ -23,6 +23,8 @@ class CommandContext(val event: MessageReceivedEvent,
         }
     }
 
+    fun replyPlain(content: String) = event.channel.sendMessage(content)
+
     fun reply(emote: String, content: String) = reply(emote) { this += content }
 
     fun reply(content: String) = reply(REPLY_SUCCESS, content)

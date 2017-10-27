@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.entities.MessageChannel
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
 import net.dv8tion.jda.core.hooks.SubscribeEvent
 import nuke.discord.util.discord.ReactionMenu
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 val REPLY_SUCCESS = ":white_check_mark:"
 val REPLY_FAILURE = ":negative_squared_cross_mark:"
@@ -39,21 +41,34 @@ fun Message.reactionMenuRange(vararg emotes: String, callback: ReactionMenu.(Mem
     }
 }
 
-fun MessageChannel.waitResponse(target: Member? = null, callback: ResponseObject.(Message) -> Unit) {
-    jda.addEventListener(object : ResponseObject {
-        @SubscribeEvent
-        fun onResponse(event: MessageReceivedEvent) {
-            if (event.channel == this@waitResponse && (target == null || target == event.member)) {
-                callback(event.message)
-            }
-        }
-
-        override fun close() {
-            jda.removeEventListener(this)
-        }
-    })
+fun MessageChannel.waitResponse(target: Member? = null, timeout: Int = 0, callback: ResponseObject.(Message) -> Unit) {
+    jda.addEventListener(ResponseObject(this, target, timeout, callback))
 }
 
-interface ResponseObject {
-    fun close()
+class ResponseObject(
+        private val channel: MessageChannel,
+        private val target: Member? = null,
+        timeout: Int = 10,
+        private val callback: ResponseObject.(Message) -> Unit
+) {
+
+    companion object {
+        val scheduler = ScheduledThreadPoolExecutor(2)
+    }
+
+    init {
+        scheduler.schedule(this::close, timeout.toLong(), TimeUnit.SECONDS)
+    }
+
+    @SubscribeEvent
+    fun onResponse(event: MessageReceivedEvent) {
+        if (event.channel == channel && (target == null || target == event.member)) {
+            callback(event.message)
+        }
+    }
+
+    fun close() {
+        channel.jda.removeEventListener(this)
+    }
+
 }

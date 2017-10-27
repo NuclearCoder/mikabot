@@ -45,11 +45,11 @@ fun Member.hasRoleForGuild(roleID: Long): Boolean {
 
 fun Member.getPermissionLevel(context: CommandContext): PermissionLevel {
     return when {
-        user.id == context.botOwner.id -> PermissionLevel.BotOwner
-        isOwner -> PermissionLevel.ServerOwner
-        hasPermission(Permission.KICK_MEMBERS) || hasPermission(Permission.BAN_MEMBERS) -> PermissionLevel.Moderator
-        context.event.channelType == ChannelType.PRIVATE -> PermissionLevel.Private
-        else -> PermissionLevel.User
+        user.id == context.botOwner.id -> PermissionLevel.BOT_OWNER
+        isOwner -> PermissionLevel.SERVER_OWNER
+        hasPermission(Permission.KICK_MEMBERS) || hasPermission(Permission.BAN_MEMBERS) -> PermissionLevel.MODERATOR
+        context.event.channelType == ChannelType.PRIVATE -> PermissionLevel.PRIVATE
+        else -> PermissionLevel.USER
     }
 }
 

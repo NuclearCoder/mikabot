@@ -2,26 +2,43 @@ package nuke.discord.bot
 
 import nuke.discord.bot.basic.NukeBotBasic
 import nuke.discord.bot.sharded.NukeBotSharded
+import nuke.discord.command.MessageHandler
 import nuke.discord.command.meta.registry.CommandRegistry
 import nuke.discord.util.Config
 
 
 typealias CommandBuilder = (CommandRegistry.RegistryBuilder) -> Unit
 
+class BotBuilder internal constructor() {
 
-fun runBot(configName: String,
-           sharded: Boolean = false,
-           shardCount: Int = 0,
-           builder: CommandBuilder): NukeBot =
+    internal var sharded: Boolean = false
+    internal var shardCount: Int = 2
 
-        if (sharded)
-            runBotBasic(configName, builder)
-        else
-            runBotSharded(configName, shardCount, builder)
+    fun unsharded() {
+        sharded = false
+    }
 
+    fun sharded(count: Int = -1) {
+        sharded = true
+        shardCount = count
+    }
 
-fun runBotBasic(configName: String, builder: CommandBuilder) =
-        NukeBotBasic(Config(configName), builder)
+    var configName: String = "nukebot.cfg"
 
-fun runBotSharded(configName: String, shardCount: Int, builder: CommandBuilder) =
-        NukeBotSharded(Config(configName), shardCount, builder)
+    internal val messageHandlers = mutableListOf<MessageHandler>()
+
+    internal var commandBuilder: CommandBuilder = {}
+
+    fun commands(builder: CommandBuilder) {
+        commandBuilder = builder
+    }
+
+}
+
+fun runBot(builder: BotBuilder.() -> Unit) = BotBuilder().apply(builder).let {
+    val config = Config(it.configName)
+    if (it.sharded)
+        NukeBotSharded(config, it.shardCount, it.messageHandlers, it.commandBuilder)
+    else
+        NukeBotBasic(config, it.messageHandlers, it.commandBuilder)
+}
